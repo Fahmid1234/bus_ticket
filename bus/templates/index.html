@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+    <!-- Google Fonts Import for Modern Look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+      body, .font-sans { font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important; }
+    </style>
+    <!-- Bus Searcher (Ultra-Modern, Premium UI, Responsive) -->
+    <section class="relative min-h-[420px] flex items-center justify-center bg-gradient-to-br from-blue-300/60 via-white/80 to-blue-100/60 overflow-hidden py-12 md:py-24">
+      <svg class="absolute left-0 top-0 w-full h-full pointer-events-none" aria-hidden="true">
+        <defs>
+          <radialGradient id="bg2" cx="50%" cy="50%" r="80%">
+            <stop offset="0%" stop-color="#60a5fa" stop-opacity="0.18"/>
+            <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.04"/>
+          </radialGradient>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#bg2)"/>
+        <ellipse cx="80%" cy="10%" rx="180" ry="60" fill="#3b82f6" fill-opacity="0.10"/>
+        <ellipse cx="20%" cy="90%" rx="120" ry="40" fill="#2563eb" fill-opacity="0.12"/>
+        <circle cx="60%" cy="80%" r="90" fill="#60a5fa" fill-opacity="0.07"/>
+      </svg>
+      <div class="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12 w-full max-w-5xl z-10 px-2 md:px-0">
+        <!-- Animated Illustration (Lottie or SVG) -->
+        <div class="hidden md:block animate-fade-in-slow">
+          <img src="https://assets10.lottiefiles.com/packages/lf20_0yfsb3a1.json" alt="Bus Animation" class="w-52 h-52 md:w-72 md:h-72 object-contain rounded-2xl shadow-xl bg-white/60 border border-blue-100" onerror="this.style.display='none'">
+        </div>
+        <!-- Search Form -->
+        <form action="{% url 'schedule' %}" method="get" class="relative glassy-3d-card w-full max-w-lg px-4 sm:px-6 md:px-10 py-8 md:py-12 rounded-3xl shadow-2xl border border-blue-200/60 flex flex-col gap-5 md:gap-7 backdrop-blur-2xl hover:scale-[1.025] transition-transform duration-300">
+          <h2 class="text-xl md:text-2xl font-extrabold text-blue-900 mb-2 tracking-tight text-center">Find Your Bus</h2>
+          <div class="relative w-full">
+            <span class="input-icon"><i class="fas fa-map-marker-alt"></i></span>
+            <input type="text" id="origin-input" name="origin" autocomplete="off" placeholder=" " class="w-full pl-12 pr-4 py-4 md:py-5 border-0 rounded-xl bg-white/60 focus:bg-white/90 focus:ring-2 focus:ring-blue-400 text-base md:text-lg font-semibold shadow-inner transition-all duration-200 peer" value="{{ request.GET.origin|default:'' }}">
+            <label for="origin-input" class="floating-label-3d">From (e.g. Dhaka)</label>
+            <ul id="origin-suggestions" class="absolute left-0 right-0 bg-white border border-gray-200 rounded-md shadow z-10 hidden"></ul>
+          </div>
+          <div class="relative w-full">
+            <span class="input-icon"><i class="fas fa-location-arrow"></i></span>
+            <input type="text" id="destination-input" name="destination" autocomplete="off" placeholder=" " class="w-full pl-12 pr-4 py-4 md:py-5 border-0 rounded-xl bg-white/60 focus:bg-white/90 focus:ring-2 focus:ring-blue-400 text-base md:text-lg font-semibold shadow-inner transition-all duration-200 peer" value="{{ request.GET.destination|default:'' }}">
+            <label for="destination-input" class="floating-label-3d">To (e.g. Chittagong)</label>
+            <ul id="destination-suggestions" class="absolute left-0 right-0 bg-white border border-gray-200 rounded-md shadow z-10 hidden"></ul>
+          </div>
+          <div class="relative w-full">
+            <span class="input-icon"><i class="fas fa-calendar-alt"></i></span>
+            <input type="date" name="date" id="date-input" placeholder=" " class="w-full pl-12 pr-4 py-4 md:py-5 border-0 rounded-xl bg-white/60 focus:bg-white/90 focus:ring-2 focus:ring-blue-400 text-base md:text-lg font-semibold shadow-inner transition-all duration-200 peer" value="{{ request.GET.date|default:'' }}">
+            {% comment %} <label for="date-input" class="floating-label-3d">Date</label> {% endcomment %}
+          </div>
+          <button type="submit" class="w-full px-8 md:px-10 py-4 md:py-5 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-500 text-white rounded-2xl font-extrabold text-base md:text-lg shadow-xl hover:scale-105 hover:from-blue-700 hover:to-blue-500 focus:ring-4 focus:ring-blue-300 transition-all duration-200 animate-shine relative overflow-hidden mt-2">Search <i class="fas fa-search ml-2"></i></button>
+        </form>
+      </div>
+      <style>
+        .glassy-3d-card {
+          background: linear-gradient(135deg, rgba(255,255,255,0.75) 60%, rgba(96,165,250,0.13) 100%);
+          box-shadow: 0 12px 48px 0 rgba(31, 38, 135, 0.18), 0 1.5px 8px 0 #60a5fa22;
+          border-radius: 2rem;
+          border: 1.5px solid rgba(30, 64, 175, 0.13);
+        }
+        .floating-label-3d {
+          position: absolute;
+          left: 3.2rem;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #60a5fa;
+          pointer-events: none;
+          transition: all 0.22s cubic-bezier(.4,0,.2,1);
+          font-size: 1.08rem;
+          background: transparent;
+          font-weight: 600;
+        }
+        input:focus + .floating-label-3d,
+        input:not(:placeholder-shown) + .floating-label-3d {
+          top: -0.9rem;
+          left: 2.2rem;
+          font-size: 0.92rem;
+          color: #2563eb;
+          background: #fff;
+          padding: 0 0.4rem;
+          border-radius: 0.5rem;
+          box-shadow: 0 2px 8px 0 #60a5fa22;
+        }
+        .animate-shine .shine {
+          background: linear-gradient(120deg, transparent 0%, #fff 40%, transparent 100%);
+          opacity: 0.3;
+          transform: translateX(-100%);
+          animation: shine-move 2.5s infinite linear;
+        }
+        @keyframes shine-move {
+          0% { transform: translateX(-100%); }
+          60% { transform: translateX(120%); }
+          100% { transform: translateX(120%); }
+        }
+        .animate-fade-in-slow { animation: fadeIn 2.2s cubic-bezier(.39,.575,.56,1) both; }
+        @keyframes fadeIn { 0% { opacity: 0; transform: translateY(40px);} 100% { opacity: 1; transform: none;} }
+        .input-icon {
+          position: absolute;
+          left: 1.25rem;
+          top: 50%;
+          transform: translateY(-50%);
+          display: flex;
+          align-items: center;
+          height: 100%;
+          pointer-events: none;
+          font-size: 1.5rem;
+          color: #60a5fa;
+        }
+      </style>
+    </section>
+
+    <!-- Hero Section -->
+    <section class="relative bg-gradient-to-r from-blue-400 via-blue-100 to-white text-gray-900 py-24 overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-white/0 pointer-events-none"></div>
+      <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center relative z-10">
+        <div>
+          <h2 class="text-5xl md:text-6xl font-extrabold mb-4 leading-tight text-blue-900 drop-shadow">Travel Smarter, Travel Happier</h2>
+          <p class="text-xl mb-8 text-blue-800">Book your next bus journey in minutes. Real-time schedules, seat selection, and secure payments. <span class="font-semibold text-blue-600 animate-pulse">Your comfort, our priority.</span></p>
+          <a href="{% url 'schedule' %}" class="inline-block bg-blue-600 text-white px-10 py-4 rounded-full font-bold text-lg shadow-lg hover:bg-blue-700 transition">Book Your Seat Now</a>
+        </div>
+        <div class="flex justify-center">
+          <div class="relative">
+            <img src="{% static 'img/bus.avif' %}" alt="Bus travel" class="rounded-3xl shadow-2xl border-4 border-white w-full max-w-md animate-fade-in">
+            <span class="absolute -top-6 -left-6 bg-white/80 text-blue-700 font-bold px-4 py-2 rounded-xl shadow animate-bounce">New Routes!</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="py-16 bg-blue-50">
+      <div class="max-w-5xl mx-auto px-6">
+        <h2 class="text-3xl font-bold text-center mb-10 text-blue-900">How It Works</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition flex flex-col items-center">
+            <i class="fas fa-search-location text-4xl text-blue-600 mb-4"></i>
+            <h3 class="font-semibold text-lg mb-2">1. Search</h3>
+            <p class="text-gray-600 text-center">Enter your origin, destination, and date to find available buses.</p>
+          </div>
+          <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition flex flex-col items-center">
+            <i class="fas fa-chair text-4xl text-blue-600 mb-4"></i>
+            <h3 class="font-semibold text-lg mb-2">2. Select Seat</h3>
+            <p class="text-gray-600 text-center">Choose your preferred seat and provide passenger details.</p>
+          </div>
+          <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition flex flex-col items-center">
+            <i class="fas fa-credit-card text-4xl text-blue-600 mb-4"></i>
+            <h3 class="font-semibold text-lg mb-2">3. Pay & Go</h3>
+            <p class="text-gray-600 text-center">Pay securely online and get your e-ticket instantly.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-20 bg-white">
+      <div class="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12">
+        <div class="text-center p-8 rounded-2xl border-2 border-blue-100 hover:shadow-xl transition bg-blue-50">
+          <i class="fas fa-bus-alt text-5xl text-blue-600 mb-4 animate-bounce"></i>
+          <h3 class="text-2xl font-semibold mb-2 text-blue-900">Trusted Routes</h3>
+          <p class="text-gray-700">We work with reliable operators so you always arrive safe and on time.</p>
+        </div>
+        <div class="text-center p-8 rounded-2xl border-2 border-blue-100 hover:shadow-xl transition bg-blue-50">
+          <i class="fas fa-lock text-5xl text-blue-600 mb-4 animate-spin-slow"></i>
+          <h3 class="text-2xl font-semibold mb-2 text-blue-900">Safe Payments</h3>
+          <p class="text-gray-700">All your payments are encrypted and protected with industry-grade security.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-16 bg-gradient-to-r from-blue-100 to-blue-50">
+      <div class="max-w-4xl mx-auto px-6">
+        <h2 class="text-3xl font-bold text-center mb-10 text-blue-900">What Our Customers Say</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="bg-white p-6 rounded-xl shadow flex flex-col items-center">
+            <img src="https://randomuser.me/api/portraits/men/32.jpg" class="w-16 h-16 rounded-full mb-3 border-2 border-blue-400" alt="Customer 1">
+            <p class="text-gray-700 italic mb-2">“Super easy to book and the bus was on time. Loved the seat selection!”</p>
+            <span class="font-semibold text-blue-700">— Rahim, Dhaka</span>
+          </div>
+          <div class="bg-white p-6 rounded-xl shadow flex flex-col items-center">
+            <img src="https://randomuser.me/api/portraits/women/44.jpg" class="w-16 h-16 rounded-full mb-3 border-2 border-blue-400" alt="Customer 2">
+            <p class="text-gray-700 italic mb-2">“Payment was secure and I got my ticket instantly. Highly recommend!”</p>
+            <span class="font-semibold text-blue-700">— Ayesha, Chittagong</span>
+          </div>
+          <div class="bg-white p-6 rounded-xl shadow flex flex-col items-center">
+            <img src="https://randomuser.me/api/portraits/men/65.jpg" class="w-16 h-16 rounded-full mb-3 border-2 border-blue-400" alt="Customer 3">
+            <p class="text-gray-700 italic mb-2">“The live tracking feature is a game changer. No more waiting in the dark!”</p>
+            <span class="font-semibold text-blue-700">— Imran, Sylhet</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-20 bg-blue-700 text-white text-center relative overflow-hidden">
+      <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/diamond-upholstery.png')] opacity-10"></div>
+      <div class="max-w-xl mx-auto relative z-10">
+        <h2 class="text-4xl font-bold mb-4">Ready to Hit the Road?</h2>
+        <p class="mb-6 text-lg">Find your next destination. We'll help you get there with comfort and speed.</p>
+        <a href="{% url 'schedule' %}" class="bg-white text-blue-700 px-10 py-4 rounded-full font-bold text-lg shadow hover:bg-gray-100 transition">Book Now</a>
+      </div>
+    </section>
+
+    <script>
+    function setupAutocomplete(inputId, suggestionsId, type) {
+      const input = document.getElementById(inputId);
+      const suggestions = document.getElementById(suggestionsId);
+      let activeIndex = -1;
+      input.addEventListener('input', function() {
+        const query = input.value.trim();
+        if (!query) {
+          suggestions.innerHTML = '';
+          suggestions.classList.add('hidden');
+          return;
+        }
+        fetch(`/city-suggestions/?q=${encodeURIComponent(query)}&type=${type}`)
+          .then(res => res.json())
+          .then(data => {
+            suggestions.innerHTML = '';
+            if (data.results.length === 0) {
+              suggestions.classList.add('hidden');
+              return;
+            }
+            data.results.forEach((city, idx) => {
+              const li = document.createElement('li');
+              li.textContent = city;
+              li.className = 'px-4 py-2 cursor-pointer hover:bg-blue-100';
+              li.addEventListener('mousedown', function(e) {
+                input.value = city;
+                suggestions.innerHTML = '';
+                suggestions.classList.add('hidden');
+              });
+              suggestions.appendChild(li);
+            });
+            suggestions.classList.remove('hidden');
+          });
+      });
+      // Hide suggestions on blur
+      input.addEventListener('blur', function() {
+        setTimeout(() => suggestions.classList.add('hidden'), 100);
+      });
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+      setupAutocomplete('origin-input', 'origin-suggestions', 'origin');
+      setupAutocomplete('destination-input', 'destination-suggestions', 'destination');
+    });
+    </script>
+
+    {% endblock %}

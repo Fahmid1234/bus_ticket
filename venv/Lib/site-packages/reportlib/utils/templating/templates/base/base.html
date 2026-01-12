@@ -1,0 +1,33 @@
+<head>
+    <meta charset="utf-8">
+    {% block styles %}
+        {% for style in styles %}
+          <style>{{ style | safe }}</style>
+        {% endfor %}
+    {% endblock %}
+</head>
+<body style="padding: 15px">
+    {% block body %}
+            {% block title %}
+                {% if title %}
+                    <h1>{{ title }}</h1>
+                {% endif %}
+            {% endblock %}
+
+            {% block extra %}
+                {% if extra %}
+                    {% for key, value in extra.items() %}
+                        <p><span>{{key}}:</span> <span><b>{{value}}</b></span></p>
+                    {% endfor %}
+                {% endif %}
+            {% endblock %}
+
+            {% block tables %}
+                {% if tables %}
+                    {% for table in tables %}
+                        {{ table.render() | safe }}
+                    {% endfor %}
+                {% endif %}
+            {% endblock %}
+    {% endblock %}
+</body>

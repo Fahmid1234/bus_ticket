@@ -1,0 +1,240 @@
+.rp-table,
+:not(.jp-RenderedMarkdown).jp-RenderedHTMLCommon .rp-table {   
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.rp-table.rp-table-50 {
+    width: 50%;
+}
+
+.rp-table.rp-table-70 {
+    width: 70%;
+}
+
+.rp-table.rp-table-100 {
+    width: 100%;
+}
+
+.rp-table.layout-fixed {
+    table-layout: fixed;
+}
+
+.rp-table td,
+.rp-table th {
+    border: 1px DOTTED blue;
+    padding: 3px;
+    vertical-align: middle;
+    min-height: 14px
+}
+
+.rp-table thead th,
+.jp-RenderedHTMLCommon .rp-table thead th {
+    text-align: center;
+}
+
+/* Font size */
+.rp-table tfoot td,
+.rp-table tfoot th,
+.rp-table thead td,
+.rp-table thead th {
+    font-family: 'Calibri';
+    font-size: 10pt;
+    border-color: white;
+}
+
+.rp-table tbody td,
+.rp-table tbody th {
+    font-family: 'Roboto Mono';
+    font-size: 9pt;   
+}
+/* Font size */
+   
+.rp-table.rp-table-default thead td,
+.rp-table.rp-table-default thead th {
+    background-color: #293677;
+    color: #fff;
+}
+  
+.rp-table.rp-table-default tfoot td,
+.rp-table.rp-table-default tfoot th {
+    background-color: #cfe2f3;
+    color: #000;
+}
+
+.rp-table .no-border {
+    border: none;
+}
+
+.rp-table.rp-table-default .highlight {
+    background-color: #c9daf7;
+    color: black;
+}
+
+.rp-table .highlight {
+    font-family: 'Calibri';
+    font-weight: bold;
+    font-size: 10pt;
+}
+
+.rp-table.rp-table-striped tbody tr.even {
+    background: rgb(245, 245, 245);
+    color: black;
+}
+
+.rp-table.rp-table-striped tbody tr.odd {
+    background: white;
+    color: black;
+}
+
+.text-left,
+:not(.jp-RenderedMarkdown).jp-RenderedHTMLCommon .text-left {
+    text-align: left;
+}
+
+.text-right,
+:not(.jp-RenderedMarkdown).jp-RenderedHTMLCommon .text-right {
+    text-align: right;
+}
+
+.text-center,
+:not(.jp-RenderedMarkdown).jp-RenderedHTMLCommon .text-center {
+    text-align: center;
+}
+
+.nowrap,
+:not(.jp-RenderedMarkdown).jp-RenderedHTMLCommon .nowrap {
+    white-space: nowrap;
+}
+
+.font-weight-normal,
+:not(.jp-RenderedMarkdown).jp-RenderedHTMLCommon .font-weight-normal {
+    font-weight: normal;
+}
+
+.font-style-normal,
+:not(.jp-RenderedMarkdown).jp-RenderedHTMLCommon .font-style-normal {
+    font-style: normal;
+}
+
+.normal,
+:not(.jp-RenderedMarkdown).jp-RenderedHTMLCommon .normal {
+    font-weight: normal;
+    font-style: normal;
+}
+
+.bold,
+:not(.jp-RenderedMarkdown).jp-RenderedHTMLCommon .bold {
+    font-weight: bold;
+}
+
+.italic,
+:not(.jp-RenderedMarkdown).jp-RenderedHTMLCommon .italic {
+    font-style: italic;
+}
+
+.table-row-group {
+    display: table-row-group;
+}
+
+/* Padding */
+.p-l-0 {
+    padding-left: 0 !important;
+}
+
+.p-l-5 {
+    padding-left: 5px !important;
+}
+
+.p-l-10 {
+    padding-left: 10px !important;
+}
+
+.p-l-15 {
+    padding-left: 15px !important;
+}
+
+.p-l-20 {
+    padding-left: 20px !important;
+}
+
+.p-r-0 {
+    padding-right: 0 !important;
+}
+
+.p-r-5 {
+    padding-right: 5px !important;
+}
+
+.p-r-10 {
+    padding-right: 10px !important;
+}
+
+.p-r-15 {
+    padding-right: 15px !important;
+}
+
+.p-r-20 {
+    padding-right: 20px !important;
+}
+
+.p-t-0 {
+    padding-top: 0 !important;
+}
+
+.p-t-5 {
+    padding-top: 5px !important;
+}
+
+.p-t-10 {
+    padding-top: 10px !important;
+}
+
+.p-t-15 {
+    padding-top: 15px !important;
+}
+
+.p-t-20 {
+    padding-top: 20px !important;
+}
+
+.p-b-0 {
+    padding-bottom: 0 !important;
+}
+
+.p-b-5 {
+    padding-bottom: 5px !important;
+}
+
+.p-b-10 {
+    padding-bottom: 10px !important;
+}
+
+.p-b-15 {
+    padding-bottom: 15px !important;
+}
+
+.p-b-20 {
+    padding-bottom: 20px !important;
+}
+
+.p-0 {
+    padding: 0 !important;
+}
+
+.p-5 {
+    padding: 5px !important;
+}
+
+.p-10 {
+    padding: 10px !important;
+}
+
+.p-15 {
+    padding: 15px !important;
+}
+
+.p-20 {
+    padding: 20px !important;
+}
+/* END padding */

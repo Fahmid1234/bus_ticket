@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sign In - BusTicketPro{% endblock %}
+
+{% block content %}
+<div class="flex min-h-[80vh] items-center justify-center bg-gradient-to-br from-blue-300/60 via-white/80 to-blue-100/60 py-8 px-2 sm:px-6 lg:px-8">
+    <div class="w-full max-w-md glassy-3d-card rounded-2xl shadow-lg p-8 space-y-6">
+        <div class="text-center">
+            <h2 class="text-3xl font-bold text-gray-900">Welcome Back!</h2>
+            <p class="mt-2 text-sm text-gray-600">
+                Don't have an account?
+                <a href="{% url 'register' %}" class="font-medium text-blue-600 hover:text-blue-500">
+                    Sign up here
+                </a>
+            </p>
+        </div>
+        <form class="space-y-6" method="POST">
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md" role="alert">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+            <div>
+                <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-700">Username</label>
+                <div class="mt-1 relative rounded-md shadow-sm">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" /></svg>
+                    </div>
+                    {{ form.username }}
+                </div>
+                {% if form.username.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.username.errors.0 }}</p>
+                {% endif %}
+            </div>
+            <div>
+                <label for="{{ form.password.id_for_label }}" class="block text-sm font-medium text-gray-700">Password</label>
+                <div class="mt-1 relative rounded-md shadow-sm">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" /></svg>
+                    </div>
+                    {{ form.password }}
+                </div>
+                {% if form.password.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.password.errors.0 }}</p>
+                {% endif %}
+            </div>
+            <div>
+                <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-600 via-blue-400 to-blue-500 hover:scale-105 hover:from-blue-700 hover:to-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-transform duration-300">
+                    Sign In
+                </button>
+            </div>
+        </form>
+        <div class="mt-4 text-center">
+            <a href="{% url 'password_reset' %}" class="text-blue-600 underline">Forgot password?</a>
+        </div>
+    </div>
+</div>
+<style>
+  .glassy-3d-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.75) 60%, rgba(96,165,250,0.13) 100%);
+    box-shadow: 0 12px 48px 0 rgba(31, 38, 135, 0.18), 0 1.5px 8px 0 #60a5fa22;
+    border-radius: 2rem;
+    border: 1.5px solid rgba(30, 64, 175, 0.13);
+  }
+  .modern-input {
+    background: rgba(255,255,255,0.55);
+    border: 1.5px solid #60a5fa44;
+    border-radius: 1.2rem;
+    box-shadow: 0 2px 12px 0 #60a5fa22;
+    padding: 1rem 1.25rem;
+    font-size: 1.08rem;
+    font-weight: 500;
+    color: #1e293b;
+    transition: all 0.22s cubic-bezier(.4,0,.2,1);
+    outline: none;
+  }
+  .modern-input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px #60a5fa33, 0 2px 12px 0 #2563eb22;
+    background: rgba(255,255,255,0.85);
+  }
+  .floating-label-modern {
+    position: absolute;
+    left: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #60a5fa;
+    pointer-events: none;
+    transition: all 0.2s cubic-bezier(.4,0,.2,1);
+    font-size: 1.08rem;
+    background: transparent;
+    font-weight: 600;
+  }
+  .modern-input:focus + .floating-label-modern,
+  .modern-input:not(:placeholder-shown) + .floating-label-modern {
+    top: -0.9rem;
+    left: 1.1rem;
+    font-size: 0.92rem;
+    color: #2563eb;
+    background: #fff;
+    padding: 0 0.4rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 8px 0 #60a5fa22;
+  }
+</style>
+{% endblock %} 

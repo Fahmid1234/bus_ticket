@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .glassy-3d-card {
+      background: linear-gradient(135deg, rgba(255,255,255,0.85) 60%, rgba(96,165,250,0.13) 100%);
+      box-shadow: 0 12px 48px 0 rgba(31, 38, 135, 0.18), 0 1.5px 8px 0 #60a5fa22;
+      border-radius: 2rem;
+      border: 1.5px solid rgba(30, 64, 175, 0.13);
+    }
+    .floating-label-modern {
+      position: absolute;
+      left: 2.8rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #60a5fa;
+      pointer-events: none;
+      transition: all 0.2s cubic-bezier(.4,0,.2,1);
+      font-size: 1.08rem;
+      background: transparent;
+      font-weight: 600;
+      width: auto;
+      max-width: 90%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .modern-input:focus + .floating-label-modern,
+    .modern-input:not(:placeholder-shown) + .floating-label-modern {
+      top: -0.9rem;
+      left: 2.1rem;
+      font-size: 0.92rem;
+      color: #2563eb;
+      background: #fff;
+      padding: 0 0.4rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 2px 8px 0 #60a5fa22;
+    }
+    .modern-input {
+      width: 100%;
+      background: rgba(255,255,255,0.65);
+      border: 1.5px solid #60a5fa44;
+      border-radius: 1.2rem;
+      box-shadow: 0 2px 12px 0 #60a5fa22;
+      padding: 1.1rem 1.25rem;
+      font-size: 1.08rem;
+      font-weight: 500;
+      color: #1e293b;
+      transition: all 0.22s cubic-bezier(.4,0,.2,1);
+      outline: none;
+      display: block;
+    }
+  </style>
+  <!-- Main -->
+  <main class="max-w-5xl mx-auto px-2 md:px-6 py-12">
+    <h2 class="text-4xl md:text-5xl font-extrabold text-blue-900 text-center mb-12 tracking-tight drop-shadow">�� Get in Touch</h2>
+    <section class="relative grid grid-cols-1 md:grid-cols-2 gap-10 items-stretch">
+      <!-- Animated SVG background -->
+      <svg class="absolute left-0 top-0 w-full h-full pointer-events-none z-0" aria-hidden="true">
+        <defs>
+          <radialGradient id="contactBg" cx="50%" cy="50%" r="80%">
+            <stop offset="0%" stop-color="#60a5fa" stop-opacity="0.13"/>
+            <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.04"/>
+          </radialGradient>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#contactBg)"/>
+        <ellipse cx="80%" cy="10%" rx="180" ry="60" fill="#3b82f6" fill-opacity="0.10"/>
+        <ellipse cx="20%" cy="90%" rx="120" ry="40" fill="#2563eb" fill-opacity="0.12"/>
+        <circle cx="60%" cy="80%" r="90" fill="#60a5fa" fill-opacity="0.07"/>
+      </svg>
+      <!-- Contact Info -->
+      <div class="glassy-3d-card shadow rounded-2xl p-8 z-10 flex flex-col justify-center">
+        <h3 class="text-2xl font-semibold mb-4">Contact Information</h3>
+        <div class="space-y-4 text-lg text-gray-700">
+          <div class="flex items-center gap-3"><span class="text-blue-600 text-xl"><i class="fas fa-map-marker-alt"></i></span> 123 Bus Street, Dhaka 1207, Bangladesh</div>
+          <div class="flex items-center gap-3"><span class="text-blue-600 text-xl"><i class="fas fa-phone"></i></span> +880 1234 567890</div>
+          <div class="flex items-center gap-3"><span class="text-blue-600 text-xl"><i class="fas fa-envelope"></i></span> support@busticketpro.com</div>
+          <div class="flex items-center gap-3"><span class="text-blue-600 text-xl"><i class="fas fa-clock"></i></span> 9:00 AM – 8:00 PM (Everyday)</div>
+        </div>
+      </div>
+      <!-- Contact Form -->
+      <div class="glassy-3d-card shadow rounded-2xl p-8 z-10">
+        <h3 class="text-2xl font-semibold mb-6 text-blue-800">Send Us a Message</h3>
+        <form id="contactForm" class="space-y-7">
+          <div class="relative w-full">
+            <span class="absolute left-3 top-0 bottom-0 flex items-center text-blue-400 text-xl"><i class="fas fa-user"></i></span>
+            <input type="text" id="name" name="name" required class="modern-input pl-12 w-full" placeholder=" " />
+            <label for="name" class="floating-label-modern">Your Name *</label>
+          </div>
+          <div class="relative w-full">
+            <span class="absolute left-3 top-0 bottom-0 flex items-center text-blue-400 text-xl"><i class="fas fa-envelope"></i></span>
+            <input type="email" id="email" name="email" required class="modern-input pl-12 w-full" placeholder=" " />
+            <label for="email" class="floating-label-modern">Your Email *</label>
+          </div>
+          <div class="relative w-full">
+            <span class="absolute left-3 top-0 bottom-0 flex items-center text-blue-400 text-xl"><i class="fas fa-tag"></i></span>
+            <input type="text" id="subject" name="subject" class="modern-input pl-12 w-full" placeholder=" " />
+            <label for="subject" class="floating-label-modern">Subject</label>
+          </div>
+          <div class="relative w-full">
+            <span class="absolute left-3 top-0 bottom-0 flex items-start pt-4 text-blue-400 text-xl"><i class="fas fa-comment-dots"></i></span>
+            <textarea id="message" name="message" rows="5" required class="modern-input pl-12 pt-6 w-full" placeholder=" "></textarea>
+            <label for="message" class="floating-label-modern">Message *</label>
+          </div>
+          <button type="submit" class="bg-gradient-to-r from-blue-600 via-blue-400 to-blue-500 text-white px-8 py-4 rounded-xl hover:scale-105 hover:from-blue-700 hover:to-blue-500 font-extrabold text-lg shadow-xl transition-all duration-200 w-full">Send Message</button>
+        </form>
+        <p id="formSuccess" class="text-green-600 mt-4 hidden">✅ Your message has been sent successfully!</p>
+      </div>
+    </section>
+  </main>
+  
+{% endblock %}

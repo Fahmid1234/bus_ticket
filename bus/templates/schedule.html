@@ -1,0 +1,373 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<!-- Bus Searcher (Ultra-Modern, Premium UI, Responsive) -->
+<!-- {% if not request.GET.origin and not request.GET.destination and not request.GET.date %}
+<section class="relative min-h-[320px] flex items-center justify-center bg-gradient-to-br from-blue-300/60 via-white/80 to-blue-100/60 overflow-hidden py-10 md:py-16">
+  <svg class="absolute left-0 top-0 w-full h-full pointer-events-none" aria-hidden="true">
+    <defs>
+      <radialGradient id="bg2" cx="50%" cy="50%" r="80%">
+        <stop offset="0%" stop-color="#60a5fa" stop-opacity="0.18"/>
+        <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.04"/>
+      </radialGradient>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#bg2)"/>
+    <ellipse cx="80%" cy="10%" rx="180" ry="60" fill="#3b82f6" fill-opacity="0.10"/>
+    <ellipse cx="20%" cy="90%" rx="120" ry="40" fill="#2563eb" fill-opacity="0.12"/>
+    <circle cx="60%" cy="80%" r="90" fill="#60a5fa" fill-opacity="0.07"/>
+  </svg>
+  <form action="" method="get" class="relative glassy-3d-card w-full max-w-lg px-4 sm:px-6 md:px-10 py-8 md:py-10 rounded-3xl shadow-2xl border border-blue-200/60 flex flex-col gap-5 md:gap-7 backdrop-blur-2xl hover:scale-[1.025] transition-transform duration-300 z-10">
+    <h2 class="text-xl md:text-2xl font-extrabold text-blue-900 mb-2 tracking-tight text-center">Search Bus Schedules</h2>
+    <div class="relative w-full">
+      <span class="input-icon"><i class="fas fa-map-marker-alt"></i></span>
+      <input type="text" id="origin-input" name="origin" autocomplete="off" placeholder=" " class="w-full pl-12 pr-4 py-4 md:py-5 border-0 rounded-xl bg-white/60 focus:bg-white/90 focus:ring-2 focus:ring-blue-400 text-base md:text-lg font-semibold shadow-inner transition-all duration-200 peer" value="{{ request.GET.origin|default:'' }}">
+      <label for="origin-input" class="floating-label-3d">From (e.g. Dhaka)</label>
+      <ul id="origin-suggestions" class="absolute left-0 right-0 bg-white border border-gray-200 rounded-md shadow z-10 hidden"></ul>
+    </div>
+    <div class="relative w-full">
+      <span class="input-icon"><i class="fas fa-location-arrow"></i></span>
+      <input type="text" id="destination-input" name="destination" autocomplete="off" placeholder=" " class="w-full pl-12 pr-4 py-4 md:py-5 border-0 rounded-xl bg-white/60 focus:bg-white/90 focus:ring-2 focus:ring-blue-400 text-base md:text-lg font-semibold shadow-inner transition-all duration-200 peer" value="{{ request.GET.destination|default:'' }}">
+      <label for="destination-input" class="floating-label-3d">To (e.g. Chittagong)</label>
+      <ul id="destination-suggestions" class="absolute left-0 right-0 bg-white border border-gray-200 rounded-md shadow z-10 hidden"></ul>
+    </div>
+    <div class="relative w-full">
+      <span class="input-icon"><i class="fas fa-calendar-alt"></i></span>
+      <input type="date" name="date" id="date-input" placeholder=" " class="w-full pl-12 pr-4 py-4 md:py-5 border-0 rounded-xl bg-white/60 focus:bg-white/90 focus:ring-2 focus:ring-blue-400 text-base md:text-lg font-semibold shadow-inner transition-all duration-200 peer" value="{{ request.GET.date|default:'' }}">
+    </div>
+    <button type="submit" class="w-full px-8 md:px-10 py-4 md:py-5 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-500 text-white rounded-2xl font-extrabold text-base md:text-lg shadow-xl hover:scale-105 hover:from-blue-700 hover:to-blue-500 focus:ring-4 focus:ring-blue-300 transition-all duration-200 animate-shine relative overflow-hidden mt-2">Search <i class="fas fa-search ml-2"></i></button>
+  </form>
+  <style>
+    .glassy-3d-card {
+      background: linear-gradient(135deg, rgba(255,255,255,0.75) 60%, rgba(96,165,250,0.13) 100%);
+      box-shadow: 0 12px 48px 0 rgba(31, 38, 135, 0.18), 0 1.5px 8px 0 #60a5fa22;
+      border-radius: 2rem;
+      border: 1.5px solid rgba(30, 64, 175, 0.13);
+    }
+    .floating-label-3d {
+      position: absolute;
+      left: 3.2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #60a5fa;
+      pointer-events: none;
+      transition: all 0.22s cubic-bezier(.4,0,.2,1);
+      font-size: 1.08rem;
+      background: transparent;
+      font-weight: 600;
+    }
+    input:focus + .floating-label-3d,
+    input:not(:placeholder-shown) + .floating-label-3d {
+      top: -0.9rem;
+      left: 2.2rem;
+      font-size: 0.92rem;
+      color: #2563eb;
+      background: #fff;
+      padding: 0 0.4rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 2px 8px 0 #60a5fa22;
+    }
+    .input-icon {
+      position: absolute;
+      left: 1.25rem;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      align-items: center;
+      height: 100%;
+      pointer-events: none;
+      font-size: 1.5rem;
+      color: #60a5fa;
+    }
+    .animate-shine .shine {
+      background: linear-gradient(120deg, transparent 0%, #fff 40%, transparent 100%);
+      opacity: 0.3;
+      transform: translateX(-100%);
+      animation: shine-move 2.5s infinite linear;
+    }
+    @keyframes shine-move {
+      0% { transform: translateX(-100%); }
+      60% { transform: translateX(120%); }
+      100% { transform: translateX(120%); }
+    }
+  </style>
+</section>
+{% endif %} -->
+
+<style>
+    /* Responsive Table Styles */
+    @media (max-width: 767px) {
+        .responsive-table thead {
+            display: none;
+        }
+        .responsive-table, .responsive-table tbody, .responsive-table tr {
+            display: block;
+            width: 100%;
+        }
+        .responsive-table tr {
+            margin-bottom: 1.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .responsive-table td {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            text-align: right;
+            border-bottom: 1px solid #edf2f7;
+            background-color: #fff;
+        }
+        .responsive-table tr:last-child td:last-child {
+             border-bottom: 0;
+        }
+        .responsive-table td:last-child {
+            background-color: #f7fafc;
+            padding: 1.5rem 1rem;
+        }
+        .responsive-table td::before {
+            content: attr(data-label);
+            font-weight: 600;
+            text-align: left;
+            margin-right: 1rem;
+            color: #4a5568;
+        }
+        .responsive-table .action-cell {
+            justify-content: center;
+        }
+        .responsive-table .action-cell::before {
+            display: none;
+        }
+        
+        /* Mobile Pagination Styles */
+        .pagination-mobile {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .pagination-mobile .page-numbers {
+            order: 2;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .pagination-mobile .nav-buttons {
+            order: 1;
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .pagination-mobile .page-info {
+            order: 3;
+            margin-top: 0.5rem;
+        }
+    }
+</style>
+
+<!-- Schedule Section -->
+<section class="py-16 bg-gray-50">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-3xl font-bold text-center text-blue-800 mb-10">Today's Bus Schedules</h2>
+    <div class="overflow-x-auto">
+      <table class="min-w-full bg-white responsive-table">
+        <thead>
+          <tr class="bg-blue-100 text-blue-800 text-left text-sm uppercase tracking-wider">
+            <th class="py-4 px-6">From</th>
+            <th class="py-4 px-6">To</th>
+            <th class="py-4 px-6">Departure Date</th>
+            <th class="py-4 px-6">Departure Time</th>
+            <th class="py-4 px-6">Bus Type</th>
+            <th class="py-4 px-6">Available Seats</th>
+            <th class="py-4 px-6">Price</th>
+            <th class="py-4 px-6">Action</th>
+          </tr>
+        </thead>
+        <tbody class="text-gray-700">
+          {% for schedule in schedules %}
+          <tr class="border-t hover:bg-gray-50 {% if schedule.is_departing_soon %}bg-yellow-50 border-l-4 border-l-yellow-400{% endif %}">
+            <td data-label="From" class="py-4 px-6 font-medium">{{ schedule.route.origin }}</td>
+            <td data-label="To" class="py-4 px-6 font-medium">{{ schedule.route.destination }}</td>
+            <td data-label="Departure Date" class="py-4 px-6 font-medium">{{ schedule.departure_time|date:'M d, Y' }}</td>
+            <td data-label="Departure Time" class="py-4 px-6">
+              <div class="flex items-center space-x-2">
+                <span>{{ schedule.departure_time|date:'h:i A' }}</span>
+                {% if schedule.is_departing_soon %}
+                  <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                    <i class="fas fa-clock mr-1"></i>
+                    Departing Soon
+                  </span>
+                {% endif %}
+              </div>
+            </td>
+            <td data-label="Bus Type" class="py-4 px-6">{{ schedule.bus.bus_type }}</td>
+            <td data-label="Available Seats" class="py-4 px-6">
+                <span class="font-semibold {% if schedule.available_seats > 0 %}text-green-600{% else %}text-red-600{% endif %}">
+                  {{ schedule.available_seats }}
+                </span>
+            </td>
+            <td data-label="Price" class="py-4 px-6 font-bold text-blue-700">৳{{ schedule.fare }}</td>
+            <td class="py-4 px-6 action-cell">
+              {% if schedule.available_seats > 0 %}
+              <a href="{% url 'booking' %}?schedule_id={{ schedule.id }}" 
+                 class="inline-block w-full text-center px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition font-semibold">
+                Book Now
+              </a>
+              {% else %}
+              <span class="inline-block w-full text-center px-6 py-3 bg-red-200 text-red-700 rounded-md font-semibold">Sold Out</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="8" class="py-12 px-6 text-center">
+              <div class="flex flex-col items-center space-y-4">
+                <i class="fas fa-calendar-times text-4xl text-gray-400"></i>
+                <div class="text-gray-500">
+                  {% if origin or destination or date %}
+                    <p class="text-lg font-medium">No schedules found for your search criteria.</p>
+                    <p class="text-sm">Try adjusting your search parameters or check for different dates.</p>
+                  {% else %}
+                    <p class="text-lg font-medium">No upcoming schedules available.</p>
+                    <p class="text-sm">All current schedules have departed. Please check back later for new schedules.</p>
+                  {% endif %}
+                </div>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Pagination -->
+    {% if schedules.has_other_pages %}
+    <div class="mt-8 flex justify-center">
+      <nav class="flex items-center space-x-2 pagination-mobile md:flex-row" aria-label="Pagination">
+        <!-- Navigation Buttons -->
+        <div class="nav-buttons md:hidden">
+          {% if schedules.has_previous %}
+            <a href="?{% if origin %}origin={{ origin }}&{% endif %}{% if destination %}destination={{ destination }}&{% endif %}{% if date %}date={{ date }}&{% endif %}page={{ schedules.previous_page_number }}" 
+               class="px-4 py-2 text-sm font-medium text-blue-600 bg-white border border-blue-300 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-colors duration-200">
+              <i class="fas fa-chevron-left mr-1"></i>
+              Previous
+            </a>
+          {% else %}
+            <span class="px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 border border-gray-200 rounded-lg cursor-not-allowed">
+              <i class="fas fa-chevron-left mr-1"></i>
+              Previous
+            </span>
+          {% endif %}
+          
+          {% if schedules.has_next %}
+            <a href="?{% if origin %}origin={{ origin }}&{% endif %}{% if destination %}destination={{ destination }}&{% endif %}{% if date %}date={{ date }}&{% endif %}page={{ schedules.next_page_number }}" 
+               class="px-4 py-2 text-sm font-medium text-blue-600 bg-white border border-blue-300 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-colors duration-200">
+              Next
+              <i class="fas fa-chevron-right ml-1"></i>
+            </a>
+          {% else %}
+            <span class="px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 border border-gray-200 rounded-lg cursor-not-allowed">
+              Next
+              <i class="fas fa-chevron-right ml-1"></i>
+            </span>
+          {% endif %}
+        </div>
+        
+        <!-- Previous Page (Desktop) -->
+        {% if schedules.has_previous %}
+          <a href="?{% if origin %}origin={{ origin }}&{% endif %}{% if destination %}destination={{ destination }}&{% endif %}{% if date %}date={{ date }}&{% endif %}page={{ schedules.previous_page_number }}" 
+             class="hidden md:block px-4 py-2 text-sm font-medium text-blue-600 bg-white border border-blue-300 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-colors duration-200">
+            <i class="fas fa-chevron-left mr-1"></i>
+            Previous
+          </a>
+        {% else %}
+          <span class="hidden md:block px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 border border-gray-200 rounded-lg cursor-not-allowed">
+            <i class="fas fa-chevron-left mr-1"></i>
+            Previous
+          </span>
+        {% endif %}
+        
+        <!-- Page Numbers -->
+        <div class="flex items-center space-x-1 page-numbers">
+          {% for num in schedules.paginator.page_range %}
+            {% if schedules.number == num %}
+              <span class="px-3 py-2 text-sm font-medium text-white bg-blue-600 border border-blue-600 rounded-lg">
+                {{ num }}
+              </span>
+            {% elif num > schedules.number|add:'-3' and num < schedules.number|add:'3' %}
+              <a href="?{% if origin %}origin={{ origin }}&{% endif %}{% if destination %}destination={{ destination }}&{% endif %}{% if date %}date={{ date }}&{% endif %}page={{ num }}" 
+                 class="px-3 py-2 text-sm font-medium text-blue-600 bg-white border border-blue-300 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-colors duration-200">
+                {{ num }}
+              </a>
+            {% endif %}
+          {% endfor %}
+        </div>
+        
+        <!-- Next Page (Desktop) -->
+        {% if schedules.has_next %}
+          <a href="?{% if origin %}origin={{ origin }}&{% endif %}{% if destination %}destination={{ destination }}&{% endif %}{% if date %}date={{ date }}&{% endif %}page={{ schedules.next_page_number }}" 
+             class="hidden md:block px-4 py-2 text-sm font-medium text-blue-600 bg-white border border-blue-300 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-colors duration-200">
+            Next
+            <i class="fas fa-chevron-right ml-1"></i>
+          </a>
+        {% else %}
+          <span class="hidden md:block px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 border border-gray-200 rounded-lg cursor-not-allowed">
+            Next
+            <i class="fas fa-chevron-right ml-1"></i>
+          </span>
+        {% endif %}
+      </nav>
+    </div>
+    
+    <!-- Page Info -->
+    <div class="mt-4 text-center text-sm text-gray-600 page-info">
+      Showing {{ schedules.start_index }} to {{ schedules.end_index }} of {{ schedules.paginator.count }} schedules
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<script>
+function setupAutocomplete(inputId, suggestionsId, type) {
+  const input = document.getElementById(inputId);
+  const suggestions = document.getElementById(suggestionsId);
+  let activeIndex = -1;
+  input.addEventListener('input', function() {
+    const query = input.value.trim();
+    if (!query) {
+      suggestions.innerHTML = '';
+      suggestions.classList.add('hidden');
+      return;
+    }
+    fetch(`/city-suggestions/?q=${encodeURIComponent(query)}&type=${type}`)
+      .then(res => res.json())
+      .then(data => {
+        suggestions.innerHTML = '';
+        if (data.results.length === 0) {
+          suggestions.classList.add('hidden');
+          return;
+        }
+        data.results.forEach((city, idx) => {
+          const li = document.createElement('li');
+          li.textContent = city;
+          li.className = 'px-4 py-2 cursor-pointer hover:bg-blue-100';
+          li.addEventListener('mousedown', function(e) {
+            input.value = city;
+            suggestions.innerHTML = '';
+            suggestions.classList.add('hidden');
+          });
+          suggestions.appendChild(li);
+        });
+        suggestions.classList.remove('hidden');
+      });
+  });
+  // Hide suggestions on blur
+  input.addEventListener('blur', function() {
+    setTimeout(() => suggestions.classList.add('hidden'), 100);
+  });
+}
+document.addEventListener('DOMContentLoaded', function() {
+  setupAutocomplete('origin-input', 'origin-suggestions', 'origin');
+  setupAutocomplete('destination-input', 'destination-suggestions', 'destination');
+});
+</script>
+{% endblock %}

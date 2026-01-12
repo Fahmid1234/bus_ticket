@@ -1,0 +1,137 @@
+{% load ticket_tags %}
+{% include 'header.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - BusTicketPro</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-blue-300/60 via-white/80 to-blue-100/60 min-h-screen">
+    <main class="max-w-3xl mx-auto py-12 px-2 md:px-4">
+        <div class="glassy-3d-card rounded-2xl shadow-lg p-8">
+            <h2 class="text-2xl font-bold text-center text-blue-800 mb-8">Payment Details</h2>
+
+            <!-- Order Summary -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold mb-4 pb-2 border-b">Order Summary</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Route:</span>
+                        <span class="font-medium">{{ booking.schedule.route }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Date:</span>
+                        <span class="font-medium">{{ booking.schedule.departure_time|date:"F j, Y" }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Time:</span>
+                        <span class="font-medium">{{ booking.schedule.departure_time|date:"g:i A" }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Bus Type:</span>
+                        <span class="font-medium">{{ booking.schedule.bus.bus_type }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Selected Seats:</span>
+                        <span class="font-medium">
+                            {% for ticket in tickets %}
+                                {{ ticket.seat_number|to_seat_name }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Number of Seats:</span>
+                        <span class="font-medium">{{ booking.seats_booked }}</span>
+                    </div>
+                    <div class="flex justify-between text-lg font-semibold pt-4 border-t">
+                        <span>Total Amount:</span>
+                        <span class="text-blue-800">৳{{ total_amount }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Passenger Information -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold mb-4 pb-2 border-b">Passenger Information</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Name:</span>
+                        <span class="font-medium">{{ booking.passenger_name }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Email:</span>
+                        <span class="font-medium">{{ booking.passenger_email }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Button -->
+            <div class="text-center">
+                <form method="POST" action="{% url 'initiate_payment' %}" class="inline-block">
+                    {% csrf_token %}
+                    <input type="hidden" name="booking_id" value="{{ booking.id }}">
+                    <button type="submit" class="bg-gradient-to-r from-blue-600 via-blue-400 to-blue-500 text-white px-8 py-3 rounded-xl font-semibold hover:scale-105 hover:from-blue-700 hover:to-blue-500 focus:ring-4 focus:ring-blue-300 transition-all duration-200 flex items-center justify-center space-x-2">
+                        <span>Proceed to Payment</span>
+                        <i class="fas fa-lock"></i>
+                    </button>
+                </form>
+                <p class="mt-4 text-sm text-gray-500">You will be redirected to SSLCOMMERZ secure payment gateway</p>
+                
+                
+                <div class="mt-6 flex justify-center space-x-4">
+                    <img src="https://securepay.sslcommerz.com/public/image/SSLCommerz-Pay-With-logo-All-Size-01.png" 
+                         alt="SSLCOMMERZ" class="h-8">
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white/80 py-8 mt-12 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 text-center text-gray-500">
+            <p>&copy; 2025 BusTicketPro. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Add this script at the end of the body -->
+    <script>
+        // Prevent double submission
+        document.querySelector('form').addEventListener('submit', function(e) {
+            var submitButton = this.querySelector('button[type="submit"]');
+            if (submitButton.disabled) {
+                e.preventDefault();
+            } else {
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<span>Processing...</span> <i class="fas fa-spinner fa-spin"></i>';
+            }
+        });
+    </script>
+
+    {% if payment_failed %}
+    <div class="max-w-xl mx-auto mt-12">
+        <div class="bg-white rounded-lg shadow-lg p-8 text-center">
+            <h2 class="text-2xl font-bold text-red-700 mb-4">Payment Unsuccessful</h2>
+            <p class="text-gray-700 mb-6">Unfortunately, your payment could not be completed.<br>Please try again or contact support if the problem persists.</p>
+            <div class="flex flex-col md:flex-row gap-4 justify-center">
+                <a href="/" class="bg-gray-200 text-gray-800 px-6 py-3 rounded-lg font-semibold hover:bg-gray-300 transition">Return Home</a>
+                {% if booking_id %}
+                <a href="{% url 'payment' booking_id=booking_id %}" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">Retry Payment</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <style>
+      .glassy-3d-card {
+        background: linear-gradient(135deg, rgba(255,255,255,0.75) 60%, rgba(96,165,250,0.13) 100%);
+        box-shadow: 0 12px 48px 0 rgba(31, 38, 135, 0.18), 0 1.5px 8px 0 #60a5fa22;
+        border-radius: 2rem;
+        border: 1.5px solid rgba(30, 64, 175, 0.13);
+      }
+    </style>
+</body>
+</html>

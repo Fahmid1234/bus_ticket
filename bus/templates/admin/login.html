@@ -1,0 +1,195 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+{% block title %}Admin Login | BusTicketPro{% endblock %}
+{% block extrastyle %}
+  <style>
+    body.login {
+      background: linear-gradient(135deg, #e0e7ff 0%, #f0f9ff 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+      position: relative;
+      overflow: hidden;
+    }
+    .admin-bg-anim {
+      position: absolute;
+      left: 0; top: 0; width: 100vw; height: 100vh; z-index: 0;
+      pointer-events: none;
+    }
+    .admin-login-card {
+      background: rgba(255,255,255,0.92);
+      box-shadow: 0 16px 64px 0 rgba(31, 38, 135, 0.22), 0 2px 16px 0 #60a5fa33;
+      border-radius: 2.2rem;
+      border: 1.5px solid rgba(30, 64, 175, 0.13);
+      padding: 2.7rem 2rem 2rem 2rem;
+      max-width: 410px;
+      width: 100%;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    .admin-login-card h1 {
+      font-size: 2.3rem;
+      font-weight: 900;
+      color: #2563eb;
+      text-align: center;
+      margin-bottom: 0.5rem;
+      letter-spacing: -1px;
+    }
+    .admin-login-card .subtitle {
+      text-align: center;
+      color: #64748b;
+      font-size: 1.08rem;
+      margin-bottom: 1.7rem;
+      font-weight: 500;
+    }
+    .admin-login-card .form-row {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    .admin-login-card input[type="text"],
+    .admin-login-card input[type="password"] {
+      width: 100%;
+      background: rgba(255,255,255,0.7);
+      border: 1.5px solid #60a5fa44;
+      border-radius: 1.2rem;
+      box-shadow: 0 2px 12px 0 #60a5fa22;
+      padding: 1.1rem 1.25rem;
+      font-size: 1.08rem;
+      font-weight: 500;
+      color: #1e293b;
+      transition: all 0.22s cubic-bezier(.4,0,.2,1);
+      outline: none;
+      display: block;
+    }
+    .admin-login-card input[type="text"]:focus,
+    .admin-login-card input[type="password"]:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px #60a5fa33, 0 2px 12px 0 #2563eb22;
+      background: rgba(255,255,255,0.97);
+    }
+    .admin-login-card .submit-row input[type="submit"] {
+      width: 100%;
+      background: linear-gradient(90deg, #2563eb 0%, #60a5fa 100%);
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 1.2rem;
+      padding: 1rem 0;
+      margin-top: 0.5rem;
+      box-shadow: 0 2px 12px 0 #60a5fa22;
+      transition: background 0.2s, transform 0.2s;
+      cursor: pointer;
+    }
+    .admin-login-card .submit-row input[type="submit"]:hover {
+      background: linear-gradient(90deg, #1d4ed8 0%, #3b82f6 100%);
+      transform: scale(1.03);
+    }
+    .admin-login-card .errornote {
+      background: #fee2e2;
+      color: #b91c1c;
+      border-radius: 0.7rem;
+      padding: 0.8rem 1rem;
+      margin-bottom: 1.2rem;
+      text-align: center;
+      font-weight: 600;
+    }
+    .admin-login-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.2rem;
+      position: relative;
+    }
+    .admin-login-logo .logo-ring {
+      background: linear-gradient(135deg, #2563eb 0%, #60a5fa 100%);
+      border-radius: 50%;
+      width: 3.2rem;
+      height: 3.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 0.7rem;
+      box-shadow: 0 0 0 6px #60a5fa22;
+      animation: ringPulse 2.5s infinite alternate;
+    }
+    @keyframes ringPulse {
+      0% { box-shadow: 0 0 0 6px #60a5fa22; }
+      100% { box-shadow: 0 0 0 16px #2563eb22; }
+    }
+    .admin-login-logo span {
+      font-size: 2rem;
+      color: #fff;
+    }
+    .admin-login-logo strong {
+      font-size: 1.5rem;
+      color: #2563eb;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+    .logout-note {
+      text-align: center;
+      color: #2563eb;
+      font-size: 1rem;
+      margin-top: 1.2rem;
+      font-weight: 500;
+      background: #e0e7ff;
+      border-radius: 0.7rem;
+      padding: 0.7rem 1rem;
+      box-shadow: 0 2px 8px 0 #60a5fa11;
+      display: none;
+    }
+    .logout-note.active {
+      display: block;
+    }
+  </style>
+{% endblock %}
+{% block content %}
+  <body class="login">
+    <svg class="admin-bg-anim" aria-hidden="true">
+      <defs>
+        <radialGradient id="adminBg" cx="50%" cy="50%" r="80%">
+          <stop offset="0%" stop-color="#60a5fa" stop-opacity="0.13"/>
+          <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.04"/>
+        </radialGradient>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#adminBg)"/>
+      <ellipse cx="80%" cy="10%" rx="180" ry="60" fill="#3b82f6" fill-opacity="0.10"/>
+      <ellipse cx="20%" cy="90%" rx="120" ry="40" fill="#2563eb" fill-opacity="0.12"/>
+      <circle cx="60%" cy="80%" r="90" fill="#60a5fa" fill-opacity="0.07"/>
+    </svg>
+    <div class="admin-login-card">
+      <div class="admin-login-logo">
+        <span class="logo-ring"><span>🚌</span></span> <strong>BusTicketPro Admin</strong>
+      </div>
+      <h1>Admin Login</h1>
+      <div class="subtitle">Welcome! Please sign in to access the admin dashboard.</div>
+      {% if form.errors %}
+        <p class="errornote">Please enter the correct username and password for a staff account.</p>
+      {% endif %}
+      <form action="" method="post" id="login-form" novalidate>{% csrf_token %}
+        <div class="form-row">
+          {{ form.username.label_tag }}
+          {{ form.username }}
+        </div>
+        <div class="form-row">
+          {{ form.password.label_tag }}
+          {{ form.password }}
+        </div>
+        <div class="submit-row">
+          <input type="submit" value="Log in">
+        </div>
+      </form>
+      <div id="logoutNote" class="logout-note">You have been logged out. Please log in again to access the admin panel.</div>
+    </div>
+    <script>
+      // Show logout note if redirected after logout
+      if (window.location.search.includes('logged_out=1')) {
+        document.getElementById('logoutNote').classList.add('active');
+      }
+    </script>
+  </body>
+{% endblock %} 

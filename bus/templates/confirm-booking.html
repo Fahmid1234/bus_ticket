@@ -1,0 +1,131 @@
+{% load ticket_tags %}
+{% include 'header.html' %}
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Confirm Booking - BusTicketPro</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+<body class="bg-gradient-to-br from-blue-300/60 via-white/80 to-blue-100/60 min-h-screen font-sans text-gray-800 flex flex-col">
+
+  <main class="flex-grow max-w-4xl mx-auto p-6">
+
+    <h2 class="text-3xl font-bold text-blue-800 mb-2 text-center">🧾 Ticket Invoice</h2>
+    <p class="text-green-700 text-center text-lg mb-8 font-semibold">Payment Successful! Your booking is confirmed.</p>
+
+    <div class="glassy-3d-card rounded-2xl shadow-lg p-6 space-y-8">
+
+      <!-- Booking Summary -->
+      <section>
+        <h3 class="text-xl font-semibold mb-4 border-b border-gray-200 pb-2">Booking Details</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-700">
+          <div><strong>From:</strong> {{ booking.schedule.route.origin }}</div>
+          <div><strong>To:</strong> {{ booking.schedule.route.destination }}</div>
+          <div><strong>Date:</strong> {{ booking.schedule.departure_time|date:'Y-m-d' }}</div>
+          <div><strong>Bus Name:</strong> {{ booking.schedule.bus.name }}</div>
+          <div><strong>Bus Type:</strong> {{ booking.schedule.bus.bus_type }}</div>
+          <div><strong>Selected Seats:</strong> {% for ticket in tickets %}{{ ticket.seat_number|to_seat_name }}{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+          <div><strong>Total Price:</strong> ৳{% with total_price=booking.seats_booked|multiply:booking.schedule.fare %}{{ total_price|floatformat:2 }}{% endwith %}</div>
+          <div><strong>Payment Status:</strong> <span class="text-green-700 font-bold">Paid</span></div>
+        </div>
+      </section>
+
+      <!-- Passenger Information -->
+      <section>
+        <h3 class="text-xl font-semibold mb-4 border-b border-gray-200 pb-2">Passenger Details</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-700">
+          <div><strong>Name:</strong> {{ booking.passenger_name }}</div>
+          <div><strong>Email:</strong> {{ booking.passenger_email }}</div>
+          <div><strong>Booking Time:</strong> {{ booking.booking_time|date:'Y-m-d H:i' }}</div>
+          <div><strong>Booking ID:</strong> {{ booking.id }}</div>
+        </div>
+      </section>
+      <div class="flex flex-col md:flex-row justify-center mt-8 gap-4">
+        <div class="w-full text-center mb-4">
+          <div class="bg-blue-50 border border-blue-200 text-blue-800 rounded-lg px-6 py-4 mb-4 text-lg font-medium">
+            You can <strong>print</strong> or <strong>download</strong> your ticket invoice using the buttons below.
+            {% if just_paid %}
+              <div class="text-sm text-blue-600 mt-2">Your PDF ticket is being prepared...</div>
+            {% endif %}
+          </div>
+        </div>
+        <button onclick="window.print()" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2"><i class="fas fa-print"></i> Print Invoice</button>
+        <a href="{% url 'download_invoice' %}?booking_id={{ booking.id }}" class="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors duration-200 flex items-center gap-2" target="_blank"><i class="fas fa-file-pdf"></i> Download PDF Invoice</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-white/80 text-center py-6 mt-12 border-t border-gray-200 text-gray-500 text-sm backdrop-blur-md">
+    &copy; 2025 BusTicketPro. All rights reserved.
+  </footer>
+
+  <script>
+    // Example: Load booking details from localStorage or previous page (simulate here)
+    // In real app, you can pass data via localStorage/sessionStorage, query params or API call
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Sample data to populate (replace with your real data fetching)
+      const bookingData = {
+        from: localStorage.getItem('from') || 'Dhaka',
+        to: localStorage.getItem('to') || 'Chittagong',
+        date: localStorage.getItem('date') || '2025-07-01',
+        busType: localStorage.getItem('busType') || 'AC Deluxe',
+        seats: JSON.parse(localStorage.getItem('selectedSeats')) || ['A1', 'A2', 'B1'],
+        price: (JSON.parse(localStorage.getItem('selectedSeats')) || ['A1', 'A2', 'B1']).length * 500
+      };
+
+      document.getElementById('confirmFrom').textContent = bookingData.from;
+      document.getElementById('confirmTo').textContent = bookingData.to;
+      document.getElementById('confirmDate').textContent = bookingData.date;
+      document.getElementById('confirmBusType').textContent = bookingData.busType;
+      document.getElementById('confirmSeats').textContent = bookingData.seats.join(', ');
+      document.getElementById('confirmPrice').textContent = `৳${bookingData.price}`;
+    });
+
+    // Handle form submission
+    document.getElementById('passengerForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      // Validate and process form data
+      const formData = new FormData(this);
+      const name = formData.get('fullName').trim();
+      const phone = formData.get('phone').trim();
+      const email = formData.get('email').trim();
+
+      if (!name || !phone || !email) {
+        alert('Please fill all required fields.');
+        return;
+      }
+
+      // You can add further validation here
+
+      // Simulate booking confirmation
+      alert(`Thank you, ${name}! Your booking is confirmed.\nWe have sent a confirmation email to ${email}.`);
+
+      // Optionally clear localStorage or redirect
+      localStorage.clear();
+      window.location.href = 'index.html';
+    });
+  </script>
+
+{% if just_paid %}
+<script>
+  window.addEventListener('DOMContentLoaded', function() {
+    window.open('{% url 'download_invoice' %}?booking_id={{ booking.id }}', '_blank');
+  });
+</script>
+{% endif %}
+
+<style>
+  .glassy-3d-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.75) 60%, rgba(96,165,250,0.13) 100%);
+    box-shadow: 0 12px 48px 0 rgba(31, 38, 135, 0.18), 0 1.5px 8px 0 #60a5fa22;
+    border-radius: 2rem;
+    border: 1.5px solid rgba(30, 64, 175, 0.13);
+  }
+</style>
+
+</body>
+</html>

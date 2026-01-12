@@ -1,0 +1,178 @@
+Metadata-Version: 2.1
+Name: reportlib
+Version: 3.4.0
+Summary: Generator HTML from pandas via Jinja2
+Home-page: https://git.teko.vn/data/libs/reportlib
+Author: nhat.nv
+Author-email: nhat.nv@teko.vn
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown
+Requires-Dist: css-html-js-minify (>=2.5)
+Requires-Dist: htmlmin (>=0.1)
+Requires-Dist: Jinja2 (>=2.10)
+Requires-Dist: pandas (>=0.24)
+Requires-Dist: python-dateutil (>=2.8)
+Requires-Dist: PyYAML (>=5.1)
+Requires-Dist: premailer (>=3.5)
+
+# reportlib
+Flexible and powerful report library for Python or Python Notebooks with [Pandas](https://pandas.pydata.org/) and [Jinja2](https://pypi.org/project/Jinja2/) support
+
+<table>
+<tr>
+  <td>Latest Release</td>
+  <td>
+    <a href="https://pypi.org/project/reportlib/">
+    <img src="https://img.shields.io/pypi/v/reportlib" alt="latest release" />
+    </a>
+  </td>
+</tr>
+<tr>
+  <td>License</td>
+  <td>
+    <a href="https://pypi.org/project/reportlib/">
+    <img src="https://img.shields.io/pypi/l/reportlib" alt="license" />
+    </a>
+  </td>
+</tr>
+<tr>
+  <td>Python Version</td>
+  <td>
+    <a href="https://pypi.org/project/reportlib/">
+    <img src="https://img.shields.io/pypi/pyversions/reportlib" alt="python version" />
+    </a>
+  </td>
+</tr>
+<tr>
+  <td>Wheel</td>
+  <td>
+    <a href="https://pypi.org/project/reportlib/">
+    <img src="https://img.shields.io/pypi/wheel/reportlib" alt="wheel" />
+    </a>
+  </td>
+</tr>
+</table>
+
+## What is it?
+**reportlib** is a Python package providing fast and flexible utilities to decorate and render a report. Because it based on pandas's Styler, it is friendly with pandas DataFrame, so if you got your data, you can easily display and export it.
+
+## Main Features
+Here are just a few of the things that reportlib does well:
+- Powerful and flexible Styler based on [pandas's Styler](https://pandas.pydata.org/pandas-docs/stable/user_guide/style.html), friendly with pandas DataFrame, with more styling methods
+- Friendly with Email: The HTML output use inline-css, you can send via email and that email also can be forwarded
+- Friendly with Python Notebooks, so you can display Styler or Report in html
+- Config parser: from string to other data types, for quickly get config from environment or other config files
+- Customize everything with [Jinja2](https://pypi.org/project/Jinja2/) support: table head & foot (Styler), Report template, css
+
+## Where to get it
+
+The source code is currently hosted on Teko's Gitlab at: https://git.teko.vn/data/libs/reportlib
+
+Binary installers for the latest released version are available at the [Python package index](https://pypi.org/project/reportlib)
+
+```
+pip install reportlib
+```
+
+## Dependencies:
+- [css-html-js-minify](https://pypi.org/project/css-html-js-minify/): 2.5 or higher
+- [htmlmin](https://pypi.org/project/htmlmin/): 0.1 or higher
+- [Jinja2](https://pypi.org/project/Jinja2/): 2.10 or higher
+- [pandas](https://pypi.org/project/pandas/): 0.24 or higher
+- [python-dateutil](https://pypi.org/project/python-dateutil/): 2.8 or higher
+- [PyYAML](https://pypi.org/project/PyYAML/): 5.1 or higher
+- [premailer](https://pypi.org/project/premailer/): 3.5 or higher
+
+## Installation from sources:
+Clone the repository then execute following command in the `reportlib` directory (same one where you found this file after cloning the git repo)
+```
+python setup.py install
+```
+
+Alternatively, you can use pip if you want all the dependencies pulled in automatically (the -e option is for installing it in development mode):
+```
+pip install -e .
+```
+
+## Basic usage
+
+### Project structure
+```
+root/ (or root/src/)
+ |-+-templates/
+ | |-styles.css
+ |-report.py
+ |-metadata.yml
+ ...
+```
+
+### Config report
+```bash
+export REPORT_DATE='2019-06-30'
+```
+
+### Render report
+```python
+"""report.py"""
+
+import os
+import pandas as pd
+import numpy as np
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+import reportlib
+from reportlib import Report, ConfigParser, Styler
+
+# Parse config from env
+config = ConfigParser(config=os.environ)
+report_date = config.date('REPORT_DATE', default='yesterday')
+
+# Prepare data
+df = pd.DataFrame(np.random.randn(8, 4), columns=['a', 'b', 'c', 'd'])
+
+# Config report
+reportlib.add_template_dir('templates')
+Styler.set_option('precision', 2)
+Styler.set_option('fillna', '-')
+Styler.set_option('fillinf', '-')
+Styler.set_option('fillzero', '-')
+
+# Initial generator
+report = Report(
+  styles='styles.css',
+  title='Report Demo',
+  context={
+    'report_date': report_date
+  },
+)
+
+# Styling data
+style = (
+  Styler(df)
+  .add_class('bold highlight', subset=pd.IndexSlice[0:1, df.columns])  # Bold and Highlight some row by using class `highlight`
+  .add_class('text-right', columns=df.columns)  # Align right columns
+)
+
+# Add tables
+report.add_table(style)
+
+# Run report
+html_string = report.render()
+
+# Or display it if you use a Python Notebook Interface like Jupyter
+report.show()
+```
+
+## Full Documentation
+You can found full documentation in [Wiki](https://git.teko.vn/data/libs/reportlib/wikis/Home)
+
+## Getting Help
+For usage questions, the best place to go to is [Full Documentation](#full-documentation). Further, for general questions and discussions, you can [create an issue](https://git.teko.vn/data/libs/reportlib/issues) or contact me via email at nhat.nv@teko.vn or via [Teko's workplace](https://teko.facebook.com/profile.php?id=100015364246331)
+
+## Contributing to reportlib
+All contributions, bug reports, bug fixes, documentation improvements, enhancements and ideas are welcome.
+

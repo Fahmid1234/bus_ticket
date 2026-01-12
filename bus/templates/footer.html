@@ -1,0 +1,46 @@
+<!-- Footer -->
+<footer class="bg-white border-t border-gray-200 mt-12">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-8">
+      <!-- Branding and About -->
+      <div class="flex-1 mb-8 md:mb-0">
+        <a href="/" class="flex items-center gap-2 mb-3">
+          <span class="text-3xl">🚌</span>
+          <span class="text-xl font-bold text-blue-800">BusTicketPro</span>
+        </a>
+        <p class="text-gray-500 max-w-xs">Your journey, our priority. Book bus tickets easily, securely, and with confidence.</p>
+      </div>
+      <!-- Navigation Links -->
+      <div class="flex-1 mb-8 md:mb-0">
+        <h4 class="text-lg font-semibold text-gray-700 mb-3">Quick Links</h4>
+        <ul class="space-y-2">
+          <li><a href="/" class="text-gray-600 hover:text-blue-600 transition">Home</a></li>
+          <li><a href="/schedule/" class="text-gray-600 hover:text-blue-600 transition">Schedule</a></li>
+          <li><a href="/contact/" class="text-gray-600 hover:text-blue-600 transition">Contact</a></li>
+          <li><a href="/login/" class="text-gray-600 hover:text-blue-600 transition">Login</a></li>
+          <li><a href="/register/" class="text-gray-600 hover:text-blue-600 transition">Register</a></li>
+        </ul>
+      </div>
+      <!-- Contact & Social -->
+      <div class="flex-1">
+        <h4 class="text-lg font-semibold text-gray-700 mb-3">Contact Us</h4>
+        <ul class="text-gray-500 space-y-1 mb-4">
+          <li><span class="font-semibold text-gray-700">Email:</span> support@busticketpro.com</li>
+          <li><span class="font-semibold text-gray-700">Phone:</span> +880 1234 567890</li>
+          <li><span class="font-semibold text-gray-700">Address:</span> 123 Bus Street, Dhaka 1207, Bangladesh</li>
+        </ul>
+        <div class="flex space-x-4 mt-2">
+          <a href="#" class="text-gray-400 hover:text-blue-600 transition" aria-label="Facebook"><i class="fab fa-facebook-f fa-lg"></i></a>
+          <a href="#" class="text-gray-400 hover:text-blue-600 transition" aria-label="Twitter"><i class="fab fa-twitter fa-lg"></i></a>
+          <a href="#" class="text-gray-400 hover:text-blue-600 transition" aria-label="Instagram"><i class="fab fa-instagram fa-lg"></i></a>
+          <a href="#" class="text-gray-400 hover:text-blue-600 transition" aria-label="LinkedIn"><i class="fab fa-linkedin-in fa-lg"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="border-t border-gray-100 mt-10 pt-6 text-center text-sm text-gray-400">
+      &copy; {{ now|date:'Y' }} BusTicketPro. All rights reserved.
+    </div>
+  </div>
+  <!-- Font Awesome CDN for social icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</footer>

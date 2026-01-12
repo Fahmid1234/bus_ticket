@@ -1,0 +1,63 @@
+{% extends 'html.tpl' %}
+
+{% block style %}
+{% endblock %}
+
+{%- block table %}
+  {% if not skip_table_open_tag %}
+    <table {% if table_attributes %}{{ table_attributes }}{% endif %}>
+    {%- block caption %}
+      {%- if caption -%}
+          <caption>{{caption}}</caption>
+      {%- endif -%}
+    {%- endblock caption %}
+  {% endif %}
+  {%- block thead %}
+    <thead>
+        {%- block before_head_rows %}{% endblock %}
+        {% if head is string %}
+            {% include head %}
+        {% elif head %}
+            {%- for r in head %}
+              {%- block head_tr scoped %}
+                <tr>
+                    {%- for c in r %}
+                    {%- if c.is_visible != False %}
+                    <{{ c.type }} class="{{c.class}}" {{ c.attributes|join(" ") }}>{{c.value}}</{{ c.type }}>
+                    {%- endif %}
+                    {%- endfor %}
+                </tr>
+              {%- endblock head_tr %}
+            {%- endfor %}
+        {% endif %}
+        {%- block after_head_rows %}{% endblock %}
+    </thead>
+  {%- endblock thead %}
+  {%- block tbody %}
+    <tbody>
+        {% block before_rows %}{% endblock before_rows %}
+        {% for r in body %}
+          {% set forloop = loop %}
+          {% block tr scoped %}
+            <tr class="{{ forloop.cycle('odd', 'even') }}">
+                {% for c in r %}
+                {% if c.is_visible != False %}
+                <{{ c.type }} class="{{ c.class }}" {{ c.attributes|join(" ") }}>{{ c.display_value }}</{{ c.type }}>
+                {% endif %}
+                {%- endfor %}
+            </tr>
+          {% endblock tr %}
+        {%- endfor %}
+        {%- block after_rows %}{%- endblock after_rows %}
+    </tbody>
+  {%- endblock tbody %}
+  {% block tfoot %}
+    {% if foot is string %}
+        {% include foot %}
+    {% endif %}
+  {% endblock tfoot %}
+  {% if not skip_table_close_tag %}
+    </table>
+  {% endif %}
+{%- endblock table %}
+
